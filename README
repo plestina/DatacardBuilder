@@ -1,0 +1,33 @@
+This tool produces datacards from config files (normally in yaml format).
+- to learn some yaml syntax (pretty human readable and easy to learn) go to: https://en.wikipedia.org/wiki/YAML
+
+
+---------------------
+The Main Config file
+---------------------
+
+The main configuration file that "unites them all" is e.g. build_datacards_from_dict.yaml.
+
+It is modularized by event category (final state) and then by physics process (ggH, qqZZ ...)
+like the datacards normally are.
+
+In e.g. '2e2mu'category you can find keys like 'ggH' and 'qqZZ' which denot the 2 processes which
+contribute to this category, but also keys like [category, functions_and_definitions, setup, systematics, observation].
+They are special sections and will be recognized by the DatacardBuilde class.
+
+We don't put all the information in a single configuration, but in different fragments like
+systematics.yaml and yield.yaml. To pick-up the info from these files we can simply use syntax e.g.:
+    ---
+    INSERT(yield.yaml:2e2mu:ggH)
+    ---
+which will pickup the yield for ggH under 2e2mu final state from yileds.yaml!
+
+----------------------------------
+Running the Card Builder (example)
+----------------------------------
+1) update your configuration if you like
+2) python build_datacards_from_dict.py --cfg build_datacards_from_dict.yaml --category 2e2mu -v 10
+3) to run all multiple cards from the same configuratio (eg. 2e2mu, 4e, 4mu):
+   python build_datacards_from_dict.py --cfg build_datacards_from_dict.yaml --category 2e2mu,4e,4mu -v 10
+4) the product of the builder are text datacards that point to a RooWorkspace.
+5) Use this cards as you like then
